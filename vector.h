@@ -33,7 +33,7 @@ protected:
 
 	void insert_aux(iterator position, const T& x);
 
-	void dellocate(){
+	void deallocate(){
 		if(start)
 			data_allocator::deallocate(start, end_of_storage-start);
 	}
@@ -67,7 +67,7 @@ public:
 		return size_type(end_of_storage - start);
 	}
 
-	bool empty() const{
+	bool empty(){
 		return begin()==end();
 	}
 
@@ -82,8 +82,8 @@ public:
 	explicit vector(size_type n){fill_initialize(n, T());}
 
 	~vector(){
-		destory(start, finish);
-		this->dellocate();
+		destroy(start, finish);
+		this->deallocate();
 	}
 
 	reference front() { return *begin();}
@@ -134,6 +134,20 @@ public:
 		resize(new_size, T());
 	}
 
+	void reserve(size_type new_size){
+		if(new_size<=end_of_storage-start){
+			return;
+		}
+		iterator new_start = data_allocator::allocate(new_size);
+		iterator new_finish = new_start;
+		new_finish=uninitialized_copy(start, finish, new_start);
+		destory(start, finish);
+		deallocate();
+		start = new_start;
+		finish = new_finish;
+		end_of_storage = new_start+new_size;
+	}
+
 	void clear(){
 		erase(begin(), end());
 	}
@@ -143,10 +157,26 @@ public:
 		if(n==0) return;
 
 		if( size_type( end_of_storage - finish >= n) ){
-
+			iterator old_finish = finish;
+			uninitialized_copy(finish-n, finish, finish);
+			finish += n;
+			copy_backward (position, old_finish, finish);
+			fill(position, position+n, x);
 		}
 		else{
+			const size_type old_size = size();
+			const size_type len = old_size + max(old_size, n);
+			iterator new_start = data_allocator::allocate(len);
+			iterator new_finish = new_start;
+			new_finish=uninitialized_copy(start, position, new_start);
+			new_finish=uninitialized_fill_n(new_finish, n, x);
+			new_finish=uninitialized_copy(position, finish, new_finish);
 
+			destory(start, finish);
+			deallocate();
+			start = new_start;
+			finish = new_finish;
+			end_of_storage = new_start+n;
 		}
 	}
 };
