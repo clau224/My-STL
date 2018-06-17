@@ -17,7 +17,7 @@ struct random_access_iterator_tag: public bidirectional_iterator_tag {
 template<class T, class Distance>
 struct input_iterator {
 	typedef input_iterator_tag iterator_category;
-	typedef T value_type; 
+	typedef T value_type;
 	typedef Distance difference_type;
 	typedef T* pointer;
 	typedef T& reference;
@@ -110,7 +110,7 @@ inline typename iterator_traits<Iterator>::iterator_category iterator_category(
 //获取迭代器的value_type
 template<class Iterator>
 inline typename iterator_traits<Iterator>::value_type*
-value_type(const Iterator& It){
+value_type(const Iterator& It) {
 	return static_cast<typename iterator_traits<Iterator>::value_type*>(0);
 }
 
