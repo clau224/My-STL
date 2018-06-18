@@ -30,6 +30,7 @@ struct list_iterator {
 			node(x) {
 	}
 	list_iterator() {
+		node = nullptr;
 	}
 	list_iterator(const iterator& x) :
 			node(x.node) {
@@ -47,22 +48,28 @@ struct list_iterator {
 	pointer operator ->() const {
 		return &(operator *());
 	}
+	self& operator + (int n) {
+		while(n--){
+			++this->node;
+		}
+		return *this;
+	}
 	self& operator ++() {
-		this->node = (link_type) ((*this->node).next);
+		this->node = (*this->node).next;
 		return *this;
 	}
 	self operator ++(int) {
 		self temp = *this;
-		this->node = (link_type) ((*this->node).next);
+		this->node = (*this->node).next;
 		return temp;
 	}
 	self& operator --() {
-		this->node = (link_type) ((*this->node).prev);
+		this->node = (*this->node).prev;
 		return *this;
 	}
 	self operator --(int) {
 		self temp = *this;
-		this->node = (link_type) ((*this->node).prev);
+		this->node = (*this->node).prev;
 		return temp;
 	}
 };

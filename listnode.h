@@ -11,9 +11,10 @@
 namespace MySTL {
 template<class T>
 struct list_node {
+	typedef list_node* void_pointer;
 	T value;
-	list_node* prev;
-	list_node* next;
+	void_pointer prev;
+	void_pointer next;
 };
 }
 
