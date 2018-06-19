@@ -12,7 +12,11 @@ set(SOURCE_FILES
 	../typetraits.h
 	../uninitialized.h
 	../vector.h
+	../listnode.h
+	../iterator_list.h
+	../list.h
 	Vector.cpp
+	List.cpp
 	main.cpp
         )
 

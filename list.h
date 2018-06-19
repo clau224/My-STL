@@ -30,7 +30,7 @@ public:
 
 	typedef list_iterator<T, T&, T*> iterator;
 
-	typedef simple_alloc<value_type, Alloc> data_allocator;
+	typedef simple_alloc<listnode, Alloc> data_allocator;
 
 	link_type allocnode(){
 		return data_allocator::allocate();
@@ -45,7 +45,7 @@ public:
 		return newnode;
 	}
 	void destroynode(link_type l){
-		destroy(l->value);
+		destroy(&l->value);
 		deallocnode(l);
 	}
 
@@ -109,7 +109,7 @@ public:
 		nextnode->prev = position.node->prev;
 		prevnode->next = position.node->next;
 		if(!this->empty()){
-			destroy_node(position.node);
+			destroynode(position.node);
 		}
 		return nextnode;
 	}
@@ -129,7 +129,88 @@ public:
 		}
 	}
 
+	void transfer(iterator position, iterator first, iterator last){
+		if(last == position){
+			return;
+		}
+		link_type prevnode = position.node->prev;
+		link_type rearnode = last.node->prev;
+		first.node->prev->next=last.node;
+		last.node->prev=first.node->prev;
+		prevnode->next=first.node;
+		first.node->prev = prevnode;
+		position.node->prev=rearnode;
+		rearnode->next=position.node;
+	}
 
+	void splice(iterator position, list& l){
+		if(l.empty())
+			return;
+		transfer(position, l.begin(), l.end());
+	}
+	void splice(iterator position, iterator item){
+		transfer(position, item, item+1);
+	}
+	void splice(iterator position, iterator start, iterator finish){
+		transfer(position, start, finish);
+	}
+
+	void swap(list& l){
+		link_type tmp = this->node;
+		this->node = l.node;
+		l.node = tmp;
+	}
+
+	void reverse(){
+		if(this->size()==0 || this->size()==1)
+			return;
+		iterator start = begin();
+		size_t s = size();
+		while(s--){
+			link_type tmp = start.node->prev;
+			start.node->prev = start.node->next;
+			start.node->next = tmp;
+			start--;
+		}
+	}
+
+	void merge(list& l){
+		iterator start1 = this->begin();
+		iterator start2 = l.begin();
+		while(start1!=this->end() && start2!=l.end()){
+			if(*start1<*start2){
+				++start1;
+			}
+			else{
+				iterator tmp = start2+1;
+				this->splice(start1, start2);
+				start2=tmp;
+			}
+		}
+		if(!this->empty()){
+			this->splice(start1, l);
+		}
+	}
+
+	void sort(){
+		if(this->size()==0 || this->size()==1){
+			return;
+		}
+		list<T> tmp;
+		iterator start1 = this->begin();
+		iterator start2 = this->begin();
+		while(!this->empty()){
+			start2 = this->begin();
+			while(start1!=this->end()){
+				if(*start1 < *start2)
+					start2 = start1;
+				start1++;
+			}
+			tmp.splice(tmp.end(), start2);
+		}
+		this->swap(tmp);
+		//destroynode(tmp.node);
+	}
 };
 
 }

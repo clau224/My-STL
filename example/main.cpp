@@ -10,5 +10,6 @@
 
 int main() {
 	vectorTest();
+	listTest();
 	return 0;
 }
