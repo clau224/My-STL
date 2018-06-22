@@ -23,15 +23,15 @@ struct list_iterator {
 	typedef list_node<T>* link_type;
 	typedef size_t size_type;
 	typedef ptrdiff_t difference_type;
+	typedef bidirectional_iterator_tag iterator_category;
 
 	link_type node;
 
 	list_iterator(link_type x) :
 			node(x) {
 	}
-	list_iterator() {
-		node = nullptr;
-	}
+	list_iterator() {}
+
 	list_iterator(const iterator& x) :
 			node(x.node) {
 	}
@@ -48,28 +48,36 @@ struct list_iterator {
 	pointer operator ->() const {
 		return &(operator *());
 	}
-	self& operator + (int n) {
+	self operator + (int n) {
+		self temp = *this;
 		while(n--){
-			++this->node;
+			temp = temp.node->next;
 		}
-		return *this;
+		return temp;
+	}
+	self operator - (int n) {
+		self temp = *this;
+		while(n--){
+			temp = temp.node->prev;
+		}
+		return temp;
 	}
 	self& operator ++() {
-		this->node = (*this->node).next;
+		this->node = this->node->next;
 		return *this;
 	}
 	self operator ++(int) {
 		self temp = *this;
-		this->node = (*this->node).next;
+		this->node = this->node->next;
 		return temp;
 	}
 	self& operator --() {
-		this->node = (*this->node).prev;
+		this->node = this->node->prev;
 		return *this;
 	}
 	self operator --(int) {
 		self temp = *this;
-		this->node = (*this->node).prev;
+		this->node = this->node->prev;
 		return temp;
 	}
 };

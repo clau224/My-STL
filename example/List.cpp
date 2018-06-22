@@ -16,9 +16,8 @@ void listTest(){
 	cout << "********************************" << endl;
 
 	MySTL::list<int> test;
-	MySTL::list<int>::iterator item;
+	MySTL::list<int>::iterator item, item1, item2;
 	MySTL::list<int> test2;
-	MySTL::list<int>::iterator item2;
 
 	cout<<"list当前尺寸大小为:"<<test.size()<<endl;
 	cout<<"在list的尾部放入2,3"<<endl;
@@ -30,34 +29,31 @@ void listTest(){
 	test.push_front(5);
 	test.push_front(6);
 
-	cout<<"当前list中，元素依次为:";
+	cout<<"当前list中，元素依次为:                           ";
 	for(item=test.begin();item!=test.end();item++){
-		cout<<*item<<" ";
-	}
-	cout<<endl;
-
-	cout<<"将list由小到大排列"<<endl;
-	test.sort();
-
-	cout<<"当前list中，元素依次为:";
-		for(item=test.begin();item!=test.end();item++){
 			cout<<*item<<" ";
 		}
 		cout<<endl;
 
-	cout<<"创建list2,向其中插入1,2,3,4"<<endl;
-	test2.push_back(1);
-	test2.push_back(2);
-	test2.push_back(3);
-	test2.push_back(4);
-
-	cout<<"将list1和list2合并"<<endl;
-	test.merge(test2);
-
-	cout<<"当前list中，元素依次为:";
-		for(item=test.begin();item!=test.end();item++){
+	cout<<"对list进行倒置:                                   ";
+	test.reverse();
+	for(item=test.begin();item!=test.end();item++){
 			cout<<*item<<" ";
 		}
+	cout<<endl;
+
+	cout<<"将begin后的第2-3的list节点插入到begin节点前       ";
+	test.transfer(test.begin(), test.begin()+2, test.begin()+4);
+	for(item=test.begin();item!=test.end();item++){
+				cout<<*item<<" ";
+			}
+	cout<<endl;
+
+	cout<<"将list中的节点按照从大到小排序:                   ";
+	test.sort();
+	for(item=test.begin();item!=test.end();item++){
+					cout<<*item<<" ";
+				}
 		cout<<endl;
 }
 

@@ -97,21 +97,19 @@ public:
 
 	iterator insert(iterator position, const T& l){
 		link_type newnode = createnode(l);
-		position.node->prev->next=newnode;
 		newnode->next=position.node;
 		newnode->prev=position.node->prev;
+		position.node->prev->next=newnode;
 		position.node->prev=newnode;
 		return newnode;
 	}
 	iterator erase(iterator position){
 		link_type prevnode = position.node->prev;
 		link_type nextnode = position.node->next;
-		nextnode->prev = position.node->prev;
-		prevnode->next = position.node->next;
-		if(!this->empty()){
-			destroynode(position.node);
-		}
-		return nextnode;
+		nextnode->prev = prevnode;
+		prevnode->next = nextnode;
+		destroynode(position.node);
+		return iterator(nextnode);
 	}
 	void clear(){
 		iterator tmp = this->begin();
@@ -133,14 +131,15 @@ public:
 		if(last == position){
 			return;
 		}
-		link_type prevnode = position.node->prev;
-		link_type rearnode = last.node->prev;
-		first.node->prev->next=last.node;
-		last.node->prev=first.node->prev;
-		prevnode->next=first.node;
-		first.node->prev = prevnode;
-		position.node->prev=rearnode;
-		rearnode->next=position.node;
+		iterator prev = position.node->prev;
+		iterator rear = last.node->prev;
+		first.node->prev->next = last.node;
+		last.node->prev = first.node->prev;
+		prev.node->next = first.node;
+		first.node->prev = prev.node;
+		rear.node->next = position.node;
+		position.node->prev = rear.node;
+
 	}
 
 	void splice(iterator position, list& l){
@@ -165,7 +164,7 @@ public:
 		if(this->size()==0 || this->size()==1)
 			return;
 		iterator start = begin();
-		size_t s = size();
+		size_t s = size()+1;
 		while(s--){
 			link_type tmp = start.node->prev;
 			start.node->prev = start.node->next;
@@ -197,15 +196,16 @@ public:
 			return;
 		}
 		list<T> tmp;
-		iterator start1 = this->begin();
-		iterator start2 = this->begin();
+		iterator start1, start2;
 		while(!this->empty()){
-			start2 = this->begin();
+			start1 = this->begin();
+			start2 = start1;
 			while(start1!=this->end()){
 				if(*start1 < *start2)
 					start2 = start1;
 				start1++;
 			}
+
 			tmp.splice(tmp.end(), start2);
 		}
 		this->swap(tmp);
