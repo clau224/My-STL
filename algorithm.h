@@ -23,24 +23,26 @@ T min(T t1, T t2) {
 }
 
 template<class Iterator, class T>
-void fill(Iterator first, Iterator last, const T& t){
-	while(first!=last){
-		*first=t;
+void fill(Iterator first, Iterator last, const T& t) {
+	while (first != last) {
+		*first = t;
 		first++;
 	}
 }
 
-void fill(char* first, char* last, const char& c){
-	memset(first, static_cast<unsigned char>(c), last-first);
+template<class T>
+void fill(char* first, char* last, const char& c) {
+	memset(first, static_cast<unsigned char>(c), last - first);
 }
-
-void fill(wchar_t* first, wchar_t* last, const wchar_t& wc){
-	memset(first, static_cast<unsigned char>(wc), (last-first)*sizeof(wchar_t));
+template<class T>
+void fill(wchar_t* first, wchar_t* last, const wchar_t& wc) {
+	memset(first, static_cast<unsigned char>(wc),
+			(last - first) * sizeof(wchar_t));
 }
 
 template<class Iterator, class Size, class T>
-Iterator fill_n(Iterator first, Size n, const T& t){
-	while(n--){
+Iterator fill_n(Iterator first, Size n, const T& t) {
+	while (n--) {
 		*first = t;
 		++first;
 	}
@@ -48,16 +50,16 @@ Iterator fill_n(Iterator first, Size n, const T& t){
 }
 
 template<class Size>
-char* fill_n(char* first, Size n, const char* c){
+char* fill_n(char* first, Size n, const char* c) {
 	memset(first, static_cast<unsigned char>(c), n);
-	first+=n;
+	first += n;
 	return first;
 }
 
 template<class Size>
-wchar_t* fill_n(char* first, Size n, const wchar_t* wc){
-	memset(first, static_cast<unsigned char>(wc), n*sizeof(wchar_t));
-	first+=n;
+wchar_t* fill_n(char* first, Size n, const wchar_t* wc) {
+	memset(first, static_cast<unsigned char>(wc), n * sizeof(wchar_t));
+	first += n;
 	return first;
 }
 
@@ -122,7 +124,8 @@ typename iterator_traits<Iterator>::difference_type distance(Iterator first,
 template<class InputIterator, class OutputIterator>
 OutputIterator __copy(InputIterator first, InputIterator last,
 		OutputIterator result, _true_type) {
-	typename iterator_traits<InputIterator>::difference_type d = distance(first, last);
+	typename iterator_traits<InputIterator>::difference_type d = distance(first,
+			last);
 	memcpy(result, first, sizeof(*first) * d);
 	advance(result, d);
 	return result;
