@@ -15,8 +15,10 @@ set(SOURCE_FILES
 	../listnode.h
 	../iterator_list.h
 	../list.h
+	../deque.h
 	Vector.cpp
 	List.cpp
+	Deque.cpp
 	main.cpp
         )
 

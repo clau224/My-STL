@@ -12,5 +12,7 @@
 void vectorTest();
 //对双向链表list进行测试
 void listTest();
+//对双向队列进行测试
+void dequeTest();
 
 #endif /* EXAMPLE_TEST_H_ */

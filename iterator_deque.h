@@ -11,7 +11,7 @@
 #include "iterator.h"
 
 namespace MySTL{
-template<class T, class Ref, class Ptr, size_t BufSize>
+template<class T, class Ref, class Ptr, size_t BufSize=0>
 struct deque_iterator{
 	typedef deque_iterator<T, T&, T*, BufSize> iterator;
 	typedef deque_iterator<const T, const T&, const T*, BufSize> const_iterator;

@@ -11,5 +11,6 @@
 int main() {
 	vectorTest();
 	listTest();
+	dequeTest();
 	return 0;
 }
