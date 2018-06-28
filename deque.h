@@ -30,7 +30,7 @@ protected:
 	typedef simple_alloc<pointer, Alloc> map_allocator;
 
 	static size_t _deque_bufsize(size_t bufsize, size_t sz){
-		return bufsize!=0 ? bufsize : (sz<512 ? 512/sz : 1);
+		return bufsize!=0 ? bufsize : (sz<512 ? size_t(512/sz) : size_t(1));
 	}
 	static size_t buffer_size(){
 		return _deque_bufsize(BufSize, sizeof(T));
@@ -38,8 +38,8 @@ protected:
 	pointer allocate_node(){
 		return data_allocator::allocate(buffer_size());
 	}
-	void deallocate_node(){
-		data_allocator::deallocate(buffer_size());
+	void deallocate_node(pointer ptr){
+		//data_allocator::deallocate(ptr, buffer_size());
 	}
 
 
@@ -70,14 +70,14 @@ protected:
 	}
 
 	void pop_back_aux(){
-		deallocate_node(finish.first);
+		deallocate_node(*finish.node);
 		finish.set_node(finish.node-1);
 		finish.cur=finish.last-1;
 		destroy(finish.cur);
 	}
 	void pop_front_aux(){
 		destroy(start.cur);
-		deallocate_node(start.first);
+		deallocate_node(*start.node);
 		start.set_node(start.node+1);
 		start.cur=start.first;
 	}
@@ -168,7 +168,7 @@ public:
 	reference back() const{
 		return *(finish-1);
 	}
-	bool empty(){
+	bool empty() const{
 		return finish==start;
 	}
 
@@ -202,7 +202,7 @@ public:
 	}
 	void pop_front(){
 		if(start.cur!=start.last-1){
-			++finish.cur;
+			++start.cur;
 			destroy(start.cur);
 		}
 		else{
@@ -214,7 +214,7 @@ public:
 	void clear(){
 		for(map_pointer nd = start.node+1; nd<finish.node; nd++){
 			destroy(*nd, *nd+buffer_size());
-			data_allocator::deallocate(*nd, buffer_size());
+			deallocate_node(*nd);
 		}
 		if(start.node == finish.node){
 			destroy(start.cur, finish.cur);
@@ -222,9 +222,15 @@ public:
 		else{
 			destroy(start.cur, start.last);
 			destroy(finish.first, finish.cur);
-			data_allocator::deallocate(finish.first, finish.cur);
+			deallocate_node(*finish.node);
 		}
+		finish = start;
 	}
+
+	size_t size(){
+		return start.node == finish.node ? finish.cur-start.cur : (buffer_size()*(finish.node-start.node-1)+start.last-start.cur+finish.cur-finish.first);
+	}
+
 };
 }
 

@@ -14,5 +14,9 @@ void vectorTest();
 void listTest();
 //对双向队列进行测试
 void dequeTest();
+//对队列和栈进行测试
+//分别以双向队列和双向链表作为底层容器
+void queueTest();
+void stackTest();
 
 #endif /* EXAMPLE_TEST_H_ */
