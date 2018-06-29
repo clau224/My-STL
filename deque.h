@@ -117,7 +117,6 @@ protected:
 
 		map_pointer new_nstart;
 		if (map_size > 2 * new_num_nodes) {
-			//偏到一边去了，把他移到正中间来
 			new_nstart = map + (map_size - new_num_nodes) / 2
 			+ (add_at_front ? node_to_add : 0);
 			if (new_nstart < start.node)
@@ -167,6 +166,8 @@ public:
 	}
 	reference back() const{
 		return *(finish-1);
+		//iterator tmp = finish;
+		//return *(--tmp);
 	}
 	bool empty() const{
 		return finish==start;

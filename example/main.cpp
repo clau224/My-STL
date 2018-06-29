@@ -13,5 +13,6 @@ int main() {
 	listTest();
 	dequeTest();
 	queueTest();
+	stackTest();
 	return 0;
 }

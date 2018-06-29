@@ -9,9 +9,10 @@
 #define ITERATOR_DEQUE_H_
 
 #include "iterator.h"
+#include <iostream>
 
 namespace MySTL{
-template<class T, class Ref, class Ptr, size_t BufSize=0>
+template<class T, class Ref, class Ptr, size_t BufSize>
 struct deque_iterator{
 	typedef deque_iterator<T, T&, T*, BufSize> iterator;
 	typedef deque_iterator<const T, const T&, const T*, BufSize> const_iterator;
@@ -31,7 +32,7 @@ struct deque_iterator{
 	T* last;
 	map_pointer node;
 	static size_t deque_bufsize(size_t n, size_t sz){
-		return n!=0 ? n : (sz<512 ? sz/512 : 1);
+		return n!=0 ? n : (sz<512 ? size_t(512/sz) : size_t(1));
 	}
 	static size_t buffer_size(){
 		return deque_bufsize(BufSize, sizeof(T));
@@ -40,7 +41,7 @@ struct deque_iterator{
 	void set_node(map_pointer newnode){
 		this->node = newnode;
 		this->first = *newnode;
-		this->last = this->first + difference_type(BufSize);
+		this->last = this->first + (difference_type)buffer_size();
 	}
 
 	reference operator*() const{
@@ -77,37 +78,37 @@ struct deque_iterator{
 	}
 	self& operator+=(difference_type n){
 		difference_type d = cur-first+n;
-		if(n>=0 && n<BufSize){
+		if(d>=0 && d<(difference_type)buffer_size()){
+			//std::cout<<"111";
 			cur+=n;
 			return *this;
 		}
-		if(n>=0){
-			difference_type dis = n-(last-cur);
-			difference_type num = dis/BufSize;
+		else if(d>=(difference_type)buffer_size()){
+			//std::cout<<"222";
+			difference_type dis = d-(difference_type)buffer_size();
+			difference_type num = 1+dis/(difference_type)buffer_size();
 			set_node(node+num);
-			cur = first+dis%BufSize;
+			cur = first+dis%(difference_type)buffer_size();
 			return *this;
 		}
-		if(n<0){
-			difference_type dis = n-(cur-first);
-			difference_type num = dis/BufSize;
+		else if(d<0){
+			difference_type dis = -d;
+			difference_type num = 1+dis/(difference_type)buffer_size();
 			set_node(node-num);
-			cur = last-dis%BufSize;
+			cur = last-dis%(difference_type)buffer_size();
 			return *this;
 		}
 	}
 	self& operator -=(difference_type n){
 		return (*this) += (-n);
 	}
-	self operator+(difference_type n){
+	self operator+(difference_type n) const{
 		self tmp = *this;
-		tmp+=n;
-		return tmp;
+		return tmp+=n;
 	}
-	self operator-(difference_type n){
+	self operator-(difference_type n) const{
 		self tmp = *this;
-		tmp-=n;
-		return tmp;
+		return tmp-=n;
 	}
 	bool operator==(const self& d) const{
 		return cur == d.cur;

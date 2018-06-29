@@ -34,6 +34,9 @@ void dequeTest(){
 	cout<<"  "<<"此时deque的size为:"<<test.size();
 	cout<<endl;
 
+	MySTL::deque<int>::iterator test_tmp = test.begin();
+	cout<<*(test_tmp+2)<<endl;
+
 	cout<<"将deque后四个pop出来,此时deque内的元素依次为:";
 	test.pop_back();
 	test.pop_back();
