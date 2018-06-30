@@ -81,7 +81,6 @@ struct deque_iterator{
 		if(d>=0 && d<(difference_type)buffer_size()){
 			//std::cout<<"111";
 			cur+=n;
-			return *this;
 		}
 		else if(d>=(difference_type)buffer_size()){
 			//std::cout<<"222";
@@ -89,15 +88,14 @@ struct deque_iterator{
 			difference_type num = 1+dis/(difference_type)buffer_size();
 			set_node(node+num);
 			cur = first+dis%(difference_type)buffer_size();
-			return *this;
 		}
 		else if(d<0){
 			difference_type dis = -d;
 			difference_type num = 1+dis/(difference_type)buffer_size();
 			set_node(node-num);
 			cur = last-dis%(difference_type)buffer_size();
-			return *this;
 		}
+		return *this;
 	}
 	self& operator -=(difference_type n){
 		return (*this) += (-n);
@@ -121,7 +119,6 @@ struct deque_iterator{
 	}
 };
 }
-
 
 
 #endif /* ITERATOR_DEQUE_H_ */

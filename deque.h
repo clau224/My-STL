@@ -236,5 +236,4 @@ public:
 }
 
 
-
 #endif /* DEQUE_H_ */
