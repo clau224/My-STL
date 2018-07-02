@@ -123,6 +123,28 @@ public:
 	typedef _rbtree_iterator<value_type, reference, pointer> iterator;
 	typedef _rbtree_iterator<value_type, const_reference, const_pointer> const_iterator;
 
+private:
+	iterator _insert(base_ptr x, base_ptr y, const Value& V){
+		//正在研究......
+	}
+	void init(){
+		header = getnode();
+		color(header) = _rbtree_red;
+		root() = 0;
+		leftmost() = header;
+		rightmost() = header;
+	}
+
+public:
+	rbtree(const Compare& comp = Compare()) :node_count(0), key_compare(comp) {
+		init();
+	}
+	~rbtree(){
+		clear();
+		put_node(header);
+	}
+	rbtree<Key, Value, KeyOfValue, Compare, Alloc>& operator = (const rbtree<Key, Value, KeyOfValue, Compare, Alloc>& x);
+
 
 };
 }
