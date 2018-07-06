@@ -11,6 +11,7 @@
 #include "iterator_rbtree.h"
 #include "construct.h"
 #include "allocator.h"
+#include "pair.h"
 
 namespace MySTL{
 template<class Key, class Value, class KeyOfValue, class Compare, class Alloc = alloc>
@@ -145,7 +146,58 @@ public:
 	}
 	rbtree<Key, Value, KeyOfValue, Compare, Alloc>& operator = (const rbtree<Key, Value, KeyOfValue, Compare, Alloc>& x);
 
+public:
+	iterator begin(){
+		return leftmost();
+	}
+	iterator end(){
+		return rightmost();
+	}
+	bool empty(){
+		return node_count == 0;
+	}
+	size_type size() const{
+		return node_count;
+	}
+	Compare key_comp() const{
+		return key_compare;
+	}
+	void clear(){
+		while(node_count--){
+			destroy_node(begin());
+		}
+	}
 
+	iterator insert_equal(const Value& v){
+		link_type y =header;
+		link_type x = root();
+		while( x!=NULL ){
+			y = x;
+			x = key_compare(KeyOfValue()(v), key(x)) ? left(x) : right(x);
+		}
+		return _insert(x, y, v);
+	}
+
+	pair<iterator, bool> insert_unique(const Value& v){
+		link_type y = header;
+		link_type x = root();
+		bool comp = true;
+		while( x!=NULL ){
+			y =x;
+			comp = key_compare(KeyOfValue()(v), key(x));
+			x = comp ? left(x) : right(x);
+		}
+		iterator j = iterator(y);
+		if(comp){
+			if(j == begin())
+				return pair<iterator, bool>(_insert(x, y, v), true);
+			else
+				j--;
+		}
+		if(key_compare(key(j.node), KeyOfValue)(v))
+			return pair<iterator, bool>(_insert<x, y, v>, true);
+		return pair<iterator, bool>(j, false);
+	}
 };
 }
 
