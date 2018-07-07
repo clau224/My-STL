@@ -125,8 +125,33 @@ public:
 	typedef _rbtree_iterator<value_type, const_reference, const_pointer> const_iterator;
 
 private:
-	iterator _insert(base_ptr x, base_ptr y, const Value& V){
-		//正在研究......
+	iterator _insert(base_ptr xx, base_ptr yy, const Value& v){
+		link_type x = (link_type)xx;
+		link_type y = (link_type)yy;
+		link_type z;
+		z = create_node(v);
+		if(y==header || x!=NULL || key_compare(KeyOfValue()(v), key(y))){
+			left(y) = z;
+			if(y == header){
+				root() = z;
+				rightmost() = z;
+			}
+			else if(y == leftmost()){
+				leftmost() = z;
+			}
+		}
+		else{
+			right(y) = z;
+			if(y == rightmost()){
+				rightmost() = z;
+			}
+		}
+		parent(z) = y;
+		left(z) = NULL;
+		right(z) = NULL;
+		_rebalance(z, header->parent);
+		++node_count;
+		return iterator(z);
 	}
 	void init(){
 		header = getnode();
@@ -197,6 +222,56 @@ public:
 		if(key_compare(key(j.node), KeyOfValue)(v))
 			return pair<iterator, bool>(_insert<x, y, v>, true);
 		return pair<iterator, bool>(j, false);
+	}
+
+protected:
+	inline void _rebalance(_rbtree_node_base* x, _rbtree_node_base*& root){
+		x->color = _rbtree_red;
+		while(x!=root && x->parent->color==_rbtree_red){
+			if(x->parent == x->parent->parent->left){
+				_rbtree_node_base* y = x->parent->parent->right;
+				if(y!=NULL && y->color==_rbtree_red){
+					x->parent->color = _rbtree_black;
+					y->color = _rbtree_black;
+					x->parent->parent->color = _rbtree_red;
+					x = x->parent->parent;
+				}
+
+			}
+		}
+	}
+
+	inline void _rotate_left(_rbtree_node_base* x, _rbtree_node_base*& root){
+		_rbtree_node_base* y = x->right;
+		_rbtree_node_base* z = x->parent;
+		x->parent = y;
+		y->parent = z;
+		if(x == root())
+			root() == y;
+		else if(x == z->left)
+			z->left = y;
+		else
+			z->right = y;
+		x->right = y->left;
+		y->left = x;
+		if(x->right!=NULL)
+			x->right->parent = x;
+	}
+	inline void _rotate_right(_rbtree_node_base* x, _rbtree_node_base*& root){
+		_rbtree_node_base* y = x->left;
+		_rbtree_node_base* z = x->parent;
+		x->parent = y;
+		y->parent = z;
+		if(x == root())
+			root() = y;
+		else if(x == z->left)
+			y = z->left;
+		else
+			y = z->right;
+		x->left = y->right;
+		y->right = x;
+		if(x->left!=NULL)
+			x->left->parent = x;
 	}
 };
 }
