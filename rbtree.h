@@ -76,19 +76,19 @@ protected:
 	}
 
 	static link_type& left(link_type x){
-		return x->left;
+		return (link_type&)x->left;
 	}
 	static link_type& right(link_type x){
-		return x->right;
+		return (link_type&)x->right;
 	}
 	static link_type& parent(link_type x){
-		return x->parent;
+		return (link_type&)x->parent;
 	}
 	static color_t& color(link_type x){
 		return (color_t&)x->color;
 	}
 	static reference value(link_type x){
-		return x->value_field;
+		return ((link_type)x)->value_field;
 	}
 	static const Key& key(link_type x){
 		return KeyOfValue() (value(x));
@@ -125,24 +125,22 @@ public:
 	typedef _rbtree_iterator<value_type, const_reference, const_pointer> const_iterator;
 
 private:
-	iterator _insert(base_ptr xx, base_ptr yy, const Value& v){
-		link_type x = (link_type)xx;
-		link_type y = (link_type)yy;
+	iterator _insert(base_ptr xx, base_ptr yy, const Value& v) {
+		link_type x = (link_type) xx;
+		link_type y = (link_type) yy;
 		link_type z;
 		z = create_node(v);
-		if(y==header || x!=NULL || key_compare(KeyOfValue()(v), key(y))){
+		if (y == header || x != NULL || key_compare(KeyOfValue()(v), key(y))) {
 			left(y) = z;
-			if(y == header){
+			if (y == header) {
 				root() = z;
 				rightmost() = z;
-			}
-			else if(y == leftmost()){
+			} else if (y == leftmost()) {
 				leftmost() = z;
 			}
-		}
-		else{
+		} else {
 			right(y) = z;
-			if(y == rightmost()){
+			if (y == rightmost()) {
 				rightmost() = z;
 			}
 		}
@@ -153,6 +151,7 @@ private:
 		++node_count;
 		return iterator(z);
 	}
+
 	void init(){
 		header = getnode();
 		color(header) = _rbtree_red;
@@ -188,9 +187,9 @@ public:
 		return key_compare;
 	}
 	void clear(){
-		while(node_count--){
-			destroy_node(begin());
-		}
+		/*while(!empty()){
+			destroy_node((link_type)begin().node);
+		}*/
 	}
 
 	iterator insert_equal(const Value& v){
@@ -215,13 +214,13 @@ public:
 		iterator j = iterator(y);
 		if(comp){
 			if(j == begin())
-				return pair<iterator, bool>(_insert(x, y, v), true);
+				return pair<iterator, bool> (_insert(x, y, v), true);
 			else
-				j--;
+				--j;
 		}
-		if(key_compare(key(j.node), KeyOfValue)(v))
-			return pair<iterator, bool>(_insert<x, y, v>, true);
-		return pair<iterator, bool>(j, false);
+		if(key_compare(key(j.node), KeyOfValue()(v)))
+			return pair<iterator, bool> (_insert(x, y, v), true);
+		return pair<iterator, bool> (j, false);
 	}
 
 protected:
@@ -236,42 +235,86 @@ protected:
 					x->parent->parent->color = _rbtree_red;
 					x = x->parent->parent;
 				}
-
+				else{
+					if(x == x->parent->parent){
+						x = x->parent;
+						_rotate_left(x, root);
+					}
+					x->parent->color = _rbtree_black;
+					x->parent->parent->color = _rbtree_red;
+					_rotate_right(x->parent->parent, root);
+				}
+			}
+			else{
+				_rbtree_node_base* y = x->parent->parent->left;
+				if(y!=NULL && y->color==_rbtree_red){
+					x->parent->color = _rbtree_black;
+					y->color = _rbtree_black;
+					x->parent->parent->color = _rbtree_red;
+					x = x->parent->parent;
+				}
+				else{
+					if(x == x->parent->left){
+						x = x->parent;
+						_rotate_right(x, root);
+					}
+					x->parent->color = _rbtree_black;
+					x->parent->parent->color = _rbtree_red;
+					_rotate_left(x->parent->parent, root);
+				}
 			}
 		}
+		root->color = _rbtree_black;
 	}
 
 	inline void _rotate_left(_rbtree_node_base* x, _rbtree_node_base*& root){
 		_rbtree_node_base* y = x->right;
-		_rbtree_node_base* z = x->parent;
-		x->parent = y;
-		y->parent = z;
-		if(x == root())
-			root() == y;
-		else if(x == z->left)
-			z->left = y;
-		else
-			z->right = y;
 		x->right = y->left;
+		if(y->left != 0)
+			y->left->parent = x;
+		y->parent = x->parent;
+
+		if(x == root)
+			root = y;
+		else if(x == x->parent->left)
+			x->parent->left = y;
+		else
+			x->parent->right = y;
 		y->left = x;
-		if(x->right!=NULL)
-			x->right->parent = x;
+		x->parent = y;
 	}
+
 	inline void _rotate_right(_rbtree_node_base* x, _rbtree_node_base*& root){
 		_rbtree_node_base* y = x->left;
-		_rbtree_node_base* z = x->parent;
-		x->parent = y;
-		y->parent = z;
-		if(x == root())
-			root() = y;
-		else if(x == z->left)
-			y = z->left;
-		else
-			y = z->right;
 		x->left = y->right;
+		if(y->right != NULL)
+			y->right->parent = x;
+		y->parent = x->parent;
+		if(x == root)
+			root = y;
+		else if(x == x->parent->right)
+			x->parent->right = y;
+		else
+			x->parent->left = y;
 		y->right = x;
-		if(x->left!=NULL)
-			x->left->parent = x;
+		x->parent = y;
+	}
+
+
+public:
+	iterator find(const Key& k){
+		link_type y = header;
+		link_type x = root();
+		while(x!=NULL){
+			if(!key_compare(key(x), k)){
+				y = x;
+				x = left(x);
+			}
+			else
+				x = right(x);
+		}
+		iterator j = iterator(y);
+		return (j == end() || key_compare(k, key(j.node))) ? end(): j;
 	}
 };
 }
