@@ -40,6 +40,7 @@ struct _rbtree_node_base{
 
 template<class Value>
 struct _rbtree_node : public _rbtree_node_base{
+	typedef _rbtree_node<Value>* link_type;
 	Value value_field;
 };
 
@@ -67,7 +68,7 @@ struct _rbtree_base_iterator{
 	}
 	void decrement(){
 		if(node->color == _rbtree_red && node->parent->parent==node)
-			node-=node->right;
+			node = node->right;
 		else if(node->left != NULL){
 			base_ptr b = node->left;
 			while(b->right!=NULL)
@@ -84,51 +85,59 @@ struct _rbtree_base_iterator{
 			node = b;
 		}
 	}
+};
 
-	template<class Value, class Ref, class Ptr>
-	struct _rbtree_iterator : public _rbtree_base_iterator{
-		typedef Value value_type;
-		typedef Ref reference;
-		typedef Ptr pointer;
-		typedef _rbtree_iterator<Value, Value&, Value*> iterator;
-		typedef _rbtree_iterator<Value, const Value&, const Value*> const_iterator;
-		typedef _rbtree_iterator<Value, Ref, Ptr> self;
-		typedef _rbtree_node<Value>* link_type;
+template<class Value, class Ref, class Ptr>
+struct _rbtree_iterator: public _rbtree_base_iterator {
+	typedef Value value_type;
+	typedef Ref reference;
+	typedef Ptr pointer;
+	typedef _rbtree_iterator<Value, Value&, Value*> iterator;
+	typedef _rbtree_iterator<Value, const Value&, const Value*> const_iterator;
+	typedef _rbtree_iterator<Value, Ref, Ptr> self;
+	typedef _rbtree_node<Value>* link_type;
 
-		_rbtree_iterator() {}
-		_rbtree_iterator(link_type x) {
-			node = x;
-		}
-		_rbtree_iterator(const iterator& item){
-			node = item.node;
-		}
+	_rbtree_iterator() {
+	}
+	_rbtree_iterator(link_type x) {
+		node = x;
+	}
+	_rbtree_iterator(const iterator& item) {
+		node = item.node;
+	}
 
-		reference operator*() const{
-			return link_type(node)->value_field;
-		}
-		pointer operator->() const{
-			return &(operator*());
-		}
+	reference operator*() const {
+		return link_type(node)->value_field;
+	}
+	pointer operator->() const {
+		return &(operator*());
+	}
 
-		self& operator++(){
-			increment();
-			return *this;
-		}
-		self operator++(int){
-			self tmp = *this;
-			++*this;
-			return tmp;
-		}
-		self& operator--(){
-			decrement();
-			return *this;
-		}
-		self operator--(int){
-			self tmp = *this;
-			--*this;
-			return tmp;
-		}
-	};
+	self& operator++() {
+		increment();
+		return *this;
+	}
+	self operator++(int) {
+		self tmp = *this;
+		++*this;
+		return tmp;
+	}
+	self& operator--() {
+		decrement();
+		return *this;
+	}
+	self operator--(int) {
+		self tmp = *this;
+		--*this;
+		return tmp;
+	}
+
+	bool operator==(const iterator& item){
+		return this->node == item.node;
+	}
+	bool operator!=(const iterator& item){
+		return this->node != item.node;
+	}
 };
 
 }

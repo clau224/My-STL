@@ -33,7 +33,7 @@ public:
 	typedef _rbtree_color_type color_t;
 
 	typedef size_t size_type;
-	typedef ptrdiff_t diference_type;
+	typedef ptrdiff_t difference_type;
 
 protected:
 	link_type getnode(){
@@ -175,7 +175,7 @@ public:
 		return leftmost();
 	}
 	iterator end(){
-		return rightmost();
+		return header;
 	}
 	bool empty(){
 		return node_count == 0;
@@ -187,9 +187,22 @@ public:
 		return key_compare;
 	}
 	void clear(){
-		/*while(!empty()){
-			destroy_node((link_type)begin().node);
-		}*/
+		if(node_count != 0){
+			_erase(root());
+			leftmost() = header;
+			rightmost() = header;
+			root() = NULL;
+			node_count = 0;
+		}
+	}
+
+	void _erase(link_type x){
+		while(x!=NULL){
+			_erase(right(x));
+			link_type y = left(x);
+			destroy_node(x);
+			x=y;
+		}
 	}
 
 	iterator insert_equal(const Value& v){
@@ -221,6 +234,13 @@ public:
 		if(key_compare(key(j.node), KeyOfValue()(v)))
 			return pair<iterator, bool> (_insert(x, y, v), true);
 		return pair<iterator, bool> (j, false);
+	}
+
+	template<class iterator>
+	bool insert_unique(iterator first, iterator last) {
+		for (auto item = first; item != last; item++) {
+			insert_unique(*item);
+		}
 	}
 
 protected:
