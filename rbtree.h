@@ -238,7 +238,7 @@ public:
 
 	template<class iterator>
 	bool insert_unique(iterator first, iterator last) {
-		for (auto item = first; item != last; item++) {
+		for (iterator item = first; item != last; item++) {
 			insert_unique(*item);
 		}
 	}

@@ -14,5 +14,8 @@ int main() {
 	dequeTest();
 	queueTest();
 	stackTest();
+	rbtreeTest();
+	setTest();
+	mapTest();
 	return 0;
 }

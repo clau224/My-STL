@@ -18,5 +18,11 @@ void dequeTest();
 //分别以双向队列和双向链表作为底层容器
 void queueTest();
 void stackTest();
+//对红黑树进行测试
+void rbtreeTest();
+//对set进行测试
+void setTest();
+//对map进行测试
+void mapTest();
 
 #endif /* EXAMPLE_TEST_H_ */

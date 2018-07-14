@@ -11,11 +11,13 @@
 namespace MySTL{
 template<class T1, class T2>
 struct pair{
-	T1 first_type;
-	T2 second_type;
-	pair():first_type(T1()),second_type(T2()){
+	typedef T1 first_type;
+	typedef T2 second_type;
+	first_type first;
+	second_type second;
+	pair():first(T1()),second(T2()){
 	}
-	pair(const T1& a, const T2& b):first_type(a),second_type(b){
+	pair(const T1& a, const T2& b):first(a),second(b){
 	}
 };
 }

@@ -15,13 +15,23 @@ set(SOURCE_FILES
 	../listnode.h
 	../iterator_list.h
 	../list.h
+	../iterator_deque.h
 	../deque.h
 	../queue.h
 	../stack.h
+	../functional.h
+	../pair.h
+	../iterator_rbtree.h
+	../rbtree.h
+	../set.h
+	../map.h
+	test.h
 	Vector.cpp
 	List.cpp
 	Deque.cpp
 	queue&stack.cpp
+	RBtree.cpp
+	set&map.cpp
 	main.cpp
         )
 
