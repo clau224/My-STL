@@ -17,5 +17,7 @@ int main() {
 	rbtreeTest();
 	setTest();
 	mapTest();
+	multisetTest();
+	multimapTest();
 	return 0;
 }

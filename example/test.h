@@ -24,5 +24,9 @@ void rbtreeTest();
 void setTest();
 //对map进行测试
 void mapTest();
+//对multiset进行测试
+void multisetTest();
+//对multimap进行测试
+void multimapTest();
 
 #endif /* EXAMPLE_TEST_H_ */

@@ -25,6 +25,8 @@ set(SOURCE_FILES
 	../rbtree.h
 	../set.h
 	../map.h
+	../multiset.h
+	../multimap.h
 	test.h
 	Vector.cpp
 	List.cpp
@@ -32,6 +34,7 @@ set(SOURCE_FILES
 	queue&stack.cpp
 	RBtree.cpp
 	set&map.cpp
+	multiset&multimap.cpp
 	main.cpp
         )
 
