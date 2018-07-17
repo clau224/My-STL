@@ -9,6 +9,7 @@
 #define SET_H_
 
 #include "rbtree.h"
+#include "functional.h"
 
 namespace MySTL{
 template<class Key, class Compare = less<int>, class Alloc = alloc>
@@ -50,6 +51,39 @@ public:
 		return *this;
 	}
 
+	key_compare key_comp() const {
+		return rbt.key_comp();
+	}
+	value_compare value_comp() const {
+		return rbt.key_comp();
+	}
+	iterator begin() const{
+		return rbt.begin();
+	}
+	iterator end() const{
+		return rbt.end();
+	}
+	bool empty() const{
+		return rbt.empty();
+	}
+	size_type size() const{
+		return rbt.size();
+	}
+
+	pair<iterator, bool> insert(const value_type& x){
+		pair<typename rep_type::iterator, bool> tmp = rbt.insert_unique(x);
+		return pair<iterator, bool>(tmp.first, tmp.second);
+	}
+	template<class InputIterator>
+	void insert(InputIterator first, InputIterator last){
+		return rbt.insert_unique(first, last);
+	}
+	void clear(){
+		rbt.clear();
+	}
+	iterator find(const key_type& x) const {
+		return rbt.find(x);
+	}
 };
 }
 
