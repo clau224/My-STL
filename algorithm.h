@@ -160,6 +160,93 @@ OutputIterator copy(InputIterator first, InputIterator last,
 		OutputIterator result) {
 	return _copy(first, last, result, value_type(first));
 }
+
+
+/*
+ * 2018-7-18
+ * 下面是heap算法部分
+ */
+
+template<class iterator>
+inline void push_heap(iterator first, iterator last){
+	_push_heap_aux(first, last, difference_type(first), value_type(first));
+}
+
+template<class iterator, class Distance, class T>
+inline void _push_heap_aux(iterator first, iterator last, Distance*, T*){
+	_push_heap(first, Distance(last-first+1), Distance(0), T(*(last-1)));
+}
+
+template<class iterator, class Distance, class T>
+void _push_heap(iterator first, Distance holeIndex, Distance topIndex, T value) {
+	Distance parent = (holeIndex-1)/2;
+	while(holeIndex>topIndex && *(first+parent)<value) {
+		*(first+holeIndex) = *(first+parent);
+		holeIndex = parent;
+		parent = (holeIndex-1)/2;
+	}
+	*(first + holeIndex) = value;
+}
+
+template<class iterator>
+inline void pop_heap(iterator first, iterator last){
+	_pop_head_aux(first, last, value_type(first));
+}
+
+template<class iterator, class T>
+inline void _pop_heap_aux(iterator first, iterator last, T*){
+	_pop_heap(first, last-1, last-1, T(*(last-1)));
+}
+
+template<class iterator, class T, class Distance>
+inline void _pop_heap(iterator first, iterator last, iterator result, T value, Distance*){
+	*result = *first;
+	_adjust_heap(first, Distance(0), Distance(last-first), value);
+}
+
+template<class iterator, class Distance, class T>
+void _adjust_heap(iterator first, Distance holeIndex, Distance len, T value){
+	Distance topIndex = holeIndex;
+	Distance secondChild = 2*holeIndex + 2;
+	while(secondChild < len){
+		if(*(first + secondChild) < *(first+(secondChild-1)))
+			secondChild--;
+		*(first+holeIndex) = *(first + secondChild);
+		holeIndex = secondChild;
+		secondChild = 2 * (secondChild+1);
+	}
+	if(secondChild == len){
+		*(first+holeIndex) = *(first + (secondChild-1));
+		holeIndex = secondChild-1;
+	}
+	_push_heap(first, holeIndex, topIndex, value);
+}
+
+template<class iterator>
+void sort_heap(iterator first, iterator last){
+	while(last-first > 1)
+		pop_heap(first, last--);
+}
+
+template<class iterator, class T, class Distance>
+void _make_heap(iterator first, iterator last, T*, Distance*){
+	if(last - first < 2)
+		return;
+	Distance len = last - first;
+	Distance parent = (len-2)/2;
+	while(true){
+		_adjust_heap(first, parent, len, T(*(first+parent)));
+		if(parent == 0)
+			return;
+		parent--;
+	}
+}
+
+template<class iterator>
+inline void make_heap(iterator first, iterator last){
+	_make_heap(first, last, value_type(first), difference_type(first));
+}
+
 }
 
 #endif /* ALGORITHM_H_ */
