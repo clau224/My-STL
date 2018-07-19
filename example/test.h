@@ -28,5 +28,7 @@ void mapTest();
 void multisetTest();
 //对multimap进行测试
 void multimapTest();
+//对heap进行测试
+void heapTest();
 
 #endif /* EXAMPLE_TEST_H_ */

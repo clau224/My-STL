@@ -35,6 +35,7 @@ set(SOURCE_FILES
 	RBtree.cpp
 	set&map.cpp
 	multiset&multimap.cpp
+	heap.cpp
 	main.cpp
         )
 

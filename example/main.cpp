@@ -19,5 +19,6 @@ int main() {
 	mapTest();
 	multisetTest();
 	multimapTest();
+	heapTest();
 	return 0;
 }
