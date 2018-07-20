@@ -22,6 +22,7 @@ public:
 	typedef T* pointer;
 	typedef T* iterator;
 	typedef T& reference;
+	typedef const T& const_reference;
 	typedef size_t size_type;
 	typedef ptrdiff_t difference_type;
 
@@ -75,10 +76,10 @@ protected:
 	}
 
 public:
-	iterator begin() {
+	iterator begin() const{
 		return start;
 	}
-	iterator end() {
+	iterator end() const{
 		return finish;
 	}
 
@@ -90,18 +91,16 @@ public:
 		return size_type(end_of_storage - start);
 	}
 
-	bool empty() {
+	bool empty() const{
 		return begin() == end();
 	}
 
-	reference operator [](size_type n) {
+	reference operator [](size_type n) const{
 		return *(begin() + n);
 	}
 
-	vector() :
-			start(0), finish(0), end_of_storage(0) {
+	vector() :start(0), finish(0), end_of_storage(0) {
 	}
-	;
 	vector(size_type n, const T& value) {
 		fill_initialize(n, value);
 	}
@@ -114,16 +113,22 @@ public:
 	explicit vector(size_type n) {
 		fill_initialize(n, T());
 	}
+	template<class Iterator>
+	vector(Iterator first, Iterator last){
+		start = data_allocator::allocate(last-first);
+		finish = uninitialized_copy(first, last, start);
+		end_of_storage = finish;
+	}
 
 	~vector() {
 		destroy(start, finish);
 		this->deallocate();
 	}
 
-	reference front() {
+	reference front() const{
 		return *begin();
 	}
-	reference back() {
+	reference back() const{
 		return *(end() - 1);
 	}
 
