@@ -30,5 +30,7 @@ void multisetTest();
 void multimapTest();
 //对heap进行测试
 void heapTest();
+//对priority_queue进行测试
+void priority_queueTest();
 
 #endif /* EXAMPLE_TEST_H_ */

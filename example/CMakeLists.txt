@@ -27,6 +27,7 @@ set(SOURCE_FILES
 	../map.h
 	../multiset.h
 	../multimap.h
+	../priority_queue.h
 	test.h
 	Vector.cpp
 	List.cpp
@@ -36,6 +37,7 @@ set(SOURCE_FILES
 	set&map.cpp
 	multiset&multimap.cpp
 	heap.cpp
+	priority_queue.cpp
 	main.cpp
         )
 

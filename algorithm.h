@@ -167,15 +167,6 @@ OutputIterator copy(InputIterator first, InputIterator last,
  * 下面是heap算法部分
  */
 
-template<class iterator>
-inline void push_heap(iterator first, iterator last){
-	_push_heap_aux(first, last, difference_type(first), value_type(first));
-}
-
-template<class iterator, class Distance, class T>
-inline void _push_heap_aux(iterator first, iterator last, Distance*, T*){
-	_push_heap(first, Distance(last-first+1), Distance(0), T(*(last-1)));
-}
 
 template<class iterator, class Distance, class T>
 void _push_heap(iterator first, Distance holeIndex, Distance topIndex, T value) {
@@ -188,20 +179,14 @@ void _push_heap(iterator first, Distance holeIndex, Distance topIndex, T value) 
 	*(first + holeIndex) = value;
 }
 
+template<class iterator, class Distance, class T>
+void _push_heap_aux(iterator first, iterator last, Distance*, T*){
+	_push_heap(first, Distance(last-first-1), Distance(0), T(*(last-1)));
+}
+
 template<class iterator>
-inline void pop_heap(iterator first, iterator last){
-	_pop_head_aux(first, last, value_type(first));
-}
-
-template<class iterator, class T>
-inline void _pop_heap_aux(iterator first, iterator last, T*){
-	_pop_heap(first, last-1, last-1, T(*(last-1)));
-}
-
-template<class iterator, class T, class Distance>
-inline void _pop_heap(iterator first, iterator last, iterator result, T value, Distance*){
-	*result = *first;
-	_adjust_heap(first, Distance(0), Distance(last-first), value);
+void push_heap(iterator first, iterator last){
+	_push_heap_aux(first, last, difference_type(first), value_type(first));
 }
 
 template<class iterator, class Distance, class T>
@@ -220,6 +205,22 @@ void _adjust_heap(iterator first, Distance holeIndex, Distance len, T value){
 		holeIndex = secondChild-1;
 	}
 	_push_heap(first, holeIndex, topIndex, value);
+}
+
+template<class iterator, class T, class Distance>
+void _pop_heap(iterator first, iterator last, iterator result, T value, Distance*){
+	*result = *first;
+	_adjust_heap(first, Distance(0), Distance(last-first), value);
+}
+
+template<class iterator, class T>
+void _pop_heap_aux(iterator first, iterator last, T*){
+	_pop_heap(first, last-1, last-1, T(*(last-1)), difference_type(first));
+}
+
+template<class iterator>
+void pop_heap(iterator first, iterator last){
+	_pop_heap_aux(first, last, value_type(first));
 }
 
 template<class iterator>
@@ -243,7 +244,7 @@ void _make_heap(iterator first, iterator last, T*, Distance*){
 }
 
 template<class iterator>
-inline void make_heap(iterator first, iterator last){
+void make_heap(iterator first, iterator last){
 	_make_heap(first, last, value_type(first), difference_type(first));
 }
 

@@ -20,5 +20,6 @@ int main() {
 	multisetTest();
 	multimapTest();
 	heapTest();
+	priority_queueTest();
 	return 0;
 }
