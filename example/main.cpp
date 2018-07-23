@@ -21,5 +21,6 @@ int main() {
 	multimapTest();
 	heapTest();
 	priority_queueTest();
+	stringTest();
 	return 0;
 }

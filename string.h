@@ -367,7 +367,99 @@ public:
 		return !(str1 == str2);
 	}
 
+
+public:
+	friend bool operator<= (const string& str1, const string& str2){
+		return less_and_equal_compare(str1.begin(), str1.end(), str2.begin(), str2.end());
+	}
+	friend bool operator<= (const string& str1, const char* str2){
+		return less_and_equal_compare(str1.begin(), str1.end(), str2, str2+strlen(str2));
+	}
+	friend bool operator<= (const char* str1, const string& str2){
+		return less_and_equal_compare(str1, str1+strlen(str1), str2.begin(), str2.end());
+	}
+	friend bool operator> (const string& str1, const string& str2){
+		return !(str1 <= str2);
+	}
+	friend bool operator> (const char* str1, const string& str2){
+		return !(str1 <= str2);
+	}
+	friend bool operator> (const string& str2, const char* str1){
+		return !(str1 <= str2);
+	}
+	friend bool operator>=(const string& str1, const string& str2) {
+		return greater_and_equal_compare(str1.begin(), str1.end(), str2.begin(), str2.end());
+	}
+	friend bool operator>=(const string& str1, const char* str2) {
+		return greater_and_equal_compare(str1.begin(), str1.end(), str2, str2 + strlen(str2));
+	}
+	friend bool operator>=(const char* str1, const string& str2) {
+		return greater_and_equal_compare(str1, str1 + strlen(str1), str2.begin(), str2.end());
+	}
+	friend bool operator<(const string& str1, const string& str2) {
+		return !(str1 >= str2);
+	}
+	friend bool operator<(const char* str1, const string& str2) {
+		return !(str1 >= str2);
+	}
+	friend bool operator<(const string& str2, const char* str1) {
+		return !(str1 >= str2);
+	}
+
+	friend string operator+ (const string& str1, const string& str2){
+		string tmp(str1);
+		tmp += str2;
+		return tmp;
+	}
+	friend string operator+ (const string& str1, const char* str2){
+		string tmp(str1);
+		tmp += str2;
+		return tmp;
+	}
+	friend string operator+ (const string& str1, value_type x){
+		string tmp(str1);
+		tmp += x;
+		return tmp;
+	}
+	friend string operator+ (const char* str1, const string& str2){
+		string tmp(str1);
+		tmp += str2;
+		return tmp;
+	}
+	friend string operator+ (value_type x, const string& str2){
+		string tmp(1, x);
+		tmp += str2;
+		return tmp;
+	}
+
+	friend std::istream& operator>> (std::istream& is, string& str){
+		str.clear();
+		char ch;
+		bool exictblank = false;
+		while(is.get(ch)){
+			if(ch=='\n' || isblank(ch)){
+				exictblank = true;
+				continue;
+			}
+			break;
+		}
+		is.putback(ch);
+		while(is.get(ch)){
+			if(ch!='\n' && isblank(ch) && ch != -1)
+				str.insert(str.end(), ch);
+			else
+				break;
+		}
+		return is;
+	}
+	friend std::ostream& operator<< (std::ostream& os, string& str){
+		for(const_iterator it = str.begin(); it != str.end(); it++){
+			os<<*it;
+		}
+		return os;
+	}
 };
+
 }
 
 
