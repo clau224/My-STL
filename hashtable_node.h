@@ -8,11 +8,13 @@
 #ifndef HASHTABLE_NODE_H_
 #define HASHTABLE_NODE_H_
 
+namespace MySTL {
 template<class Value>
-struct hashtable_node{
+struct hashtable_node {
 	hashtable_node* next;
 	Value val;
 };
+}
 
 
 
