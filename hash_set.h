@@ -53,7 +53,7 @@ public:
 		return rep.end();
 	}
 	pair<iterator, bool> insert(const value_type& obj){
-		pair<ht::iterator, bool> p = rep.insert_unique(obj);
+		pair<typename ht::iterator, bool> p = rep.insert_unique(obj);
 		return pair<iterator, bool>(p.first, p.second);
 	}
 	iterator find(const key_type& key) const{

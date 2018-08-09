@@ -11,10 +11,18 @@
 #include "hashtable_node.h"
 #include "iterator.h"
 
+namespace MySTL {
+template<class Value, class Key, class HashFunction, class ExtractKey,
+			class EqualKey, class Alloc>
+class hashtable;
+
+
 template<class Value, class Key, class HashFunction, class ExtractKey, class EqualKey, class Alloc>
-struct hashtable_iterator{
-	typedef hashtable<Value, Key, HashFunction, ExtractKey, EqualKey, Alloc> hashtable;
-	typedef hashtable_iterator<Value, Key, HashFunction, ExtractKey, EqualKey, Alloc> iterator;
+struct hashtable_iterator {
+
+	typedef hashtable<Value, Key, HashFunction, ExtractKey, EqualKey, Alloc> hashtable_;
+	typedef hashtable_iterator<Value, Key, HashFunction, ExtractKey, EqualKey,
+			Alloc> iterator;
 	typedef hashtable_node<Value> node;
 
 	typedef forward_iterator_tag iterator_category;
@@ -25,9 +33,33 @@ struct hashtable_iterator{
 	typedef Value* pointer;
 
 	node* cur;
-	hashtable *ht;
+	hashtable_ *ht;
+
+	hashtable_iterator(node* n, hashtable_* tab) :cur(n), ht(tab) {}
+	hashtable_iterator() {}
+	reference operator*() const {
+		return cur->val;
+	}
+	pointer operator->() const {
+		return &(operator*());
+	}
+	iterator& operator++() {
+		const node* old = cur;
+		cur = cur->next;
+		if(cur == NULL) {
+			size_type bucket = ht->bkt_num(old->val);
+			while(!cur && ++bucket<ht->buckets.size()){
+				cur = ht->buckets[bucket];
+			}
+		}
+		return *this;
+	}
+	iterator operator++(int) {
+		iterator tmp = *this;
+		++*this;
+		return tmp;
+	}
 };
-
-
+}
 
 #endif /* ITERATOR_HASHTABLE_H_ */

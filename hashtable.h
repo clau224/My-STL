@@ -27,6 +27,7 @@ class hashtable {
 		typedef Value 			value_type;
 		typedef Key 			key_type;
 		typedef size_t 			size_type;
+		typedef ptrdiff_t   	difference_t;
 		typedef hashtable_iterator<Value, Key, HashFunction, ExtractKey, EqualKey, Alloc> iterator;
 		typedef const iterator 	const_iterator;
 		typedef value_type* 	pointer;
@@ -74,16 +75,17 @@ class hashtable {
 		}
 
 	private:
-		static const int _stl_num_primes = 28;
-		static const unsigned long _stl_prime_list[_stl_num_primes] =
+		#define _stl_num_primes 28
+		const unsigned long _stl_prime_list[_stl_num_primes]=
 		{
-			53,		97, 	193,	389,	769,
-			1543,	3079,	6151,	12289,	24593,
-			49157,	98317,	196613,	393241,	786433,
-			1572869,	3145739,	6291469,	12582917,	25165843,
-			50331653,	100663319,	201326611,	402653189,	805306457,
-			1610612741,	3221225473ul,	4294967291ul
+				53,		97, 	193,	389,	769,
+				1543,	3079,	6151,	12289,	24593,
+				49157,	98317,	196613,	393241,	786433,
+				1572869,	3145739,	6291469,	12582917,	25165843,
+				50331653,	100663319,	201326611,	402653189,	805306457,
+				1610612741,	3221225473ul,	4294967291ul
 		};
+
 		inline unsigned long _next_prime(unsigned long n){
 			const unsigned long *first = _stl_prime_list;
 			const unsigned long *last = _stl_prime_list + _stl_num_primes;
@@ -138,7 +140,7 @@ class hashtable {
 					return iterator(tmp, this);
 				}
 			}
-			node* tmp new_node(obj);
+			node* tmp = new_node(obj);
 			tmp->next = first;
 			buckets[n] = tmp;
 			++num_elements;
@@ -146,7 +148,7 @@ class hashtable {
 		}
 
 	public:
-		hashtable(size_type n, const HashFunction& hf, const EqualKey& eql) : hash(hf), equals(eql), get_key(ExtractKey), num_elements(0){
+		hashtable(size_type n, const HashFunction& hf, const EqualKey& eql) : hash(hf), equals(eql), get_key(ExtractKey()), num_elements(0){
 			initialize_buckets(n);
 		}
 
