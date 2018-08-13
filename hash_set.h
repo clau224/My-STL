@@ -46,10 +46,10 @@ public:
 	bool empty() const{
 		return rep.empty();
 	}
-	iterator begin() const{
+	iterator begin() const {
 		return rep.begin();
 	}
-	iterator end() const{
+	iterator end() const {
 		return rep.end();
 	}
 	pair<iterator, bool> insert(const value_type& obj){

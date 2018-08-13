@@ -59,6 +59,12 @@ struct hashtable_iterator {
 		++*this;
 		return tmp;
 	}
+	bool operator==(const iterator& it) const {
+		return cur == it.cur;
+	}
+	bool operator!=(const iterator& it) const {
+		return cur != it.cur;
+	}
 };
 }
 

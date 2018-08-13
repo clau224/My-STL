@@ -93,7 +93,7 @@ class hashtable {
 			return pos == last ? *(last-1) : *pos;
 		}
 
-	private:
+	public:
 		void resize(size_type num_element_hint){
 			const size_type old_n = buckets.size();
 			if(num_element_hint > old_n){
@@ -152,15 +152,25 @@ class hashtable {
 			initialize_buckets(n);
 		}
 
-		iterator begin() const {
+		iterator begin() {
 			for(int i=0; i<buckets.size(); i++){
 				if(buckets[i] != NULL)
 					return iterator(buckets[i], this);
 			}
 			return end();
 		}
-		iterator end() const {
-			return iterator(NULL, this);
+		const_iterator begin() const {
+			for (int i = 0; i < buckets.size(); i++) {
+				if (buckets[i] != NULL)
+					return iterator(buckets[i], this);
+			}
+			return end();
+		}
+		iterator end() {
+			return iterator((node*)NULL, this);
+		}
+		const_iterator end() const {
+			return iterator((node*)NULL, this);
 		}
 		size_type bucket_count() const{
 			return buckets.size();
@@ -199,13 +209,22 @@ class hashtable {
 			}
 			num_elements = 0;
 		}
-		iterator find(const key_type& val) const{
+		const_iterator find(const key_type& val) const{
 			size_type Index = bkt_num_key(val);
 			for(node* n = buckets[Index]; n; n= n->next){
 				if(equals(val, get_key(n->val)))
 					return iterator(n, this);
 			}
 			return end();
+		}
+		value_type& find_or_insert(const value_type& tmp){
+			iterator item = find(get_key(tmp));
+			if(item == end()){
+				return *(insert_unique(tmp).first);
+			}
+			else{
+				return *item;
+			}
 		}
 	};
 }
