@@ -14,7 +14,7 @@ namespace MySTL{
 template<class Key, class T, class HashFcn = hash<Key>, class EqualKey = equal_to<Key>, class Alloc = alloc>
 class hash_map{
 private:
-	typedef hashtable<pair<const Key, T>, Key, HashFcn, select1st<pair<const Key, T>>, EqualKey, Alloc> ht;
+	typedef hashtable<pair<const Key, T>, Key, HashFcn, select1st<pair<const Key, T> >, EqualKey, Alloc> ht;
 	ht rep;
 public:
 	typedef typename ht::key_type key_type;
@@ -88,6 +88,9 @@ public:
 	}
 	size_type bucket_count() const {
 		return rep.bucket_count();
+	}
+	void erase(iterator& item){
+		rep.erase(item);
 	}
 };
 }

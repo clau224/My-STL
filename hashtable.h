@@ -61,6 +61,8 @@ class hashtable {
 			buckets.reserve(n_buckets);
 			buckets.insert(buckets.end(), n_buckets, NULL);
 		}
+
+	public:
 		size_type bkt_num(const value_type& obj, size_type n) const{
 			return bkt_num_key(get_key(obj), n);
 		}
@@ -72,6 +74,9 @@ class hashtable {
 		}
 		size_type bkt_num_key(const key_type& key, size_t n) const{
 			return hash(key) % n;
+		}
+		node* getcur(size_type bucket){
+			return buckets[bucket];
 		}
 
 	private:
@@ -159,24 +164,23 @@ class hashtable {
 			}
 			return end();
 		}
-		const_iterator begin() const {
-			for (int i = 0; i < buckets.size(); i++) {
-				if (buckets[i] != NULL)
-					return iterator(buckets[i], this);
-			}
-			return end();
-		}
 		iterator end() {
-			return iterator((node*)NULL, this);
-		}
-		const_iterator end() const {
-			return iterator((node*)NULL, this);
+			return iterator(0, this);
 		}
 		size_type bucket_count() const{
 			return buckets.size();
 		}
 		size_type size() const{
 			return num_elements;
+		}
+		size_type count(const key_type& key) const{
+			const size_type n = bkt_num(key);
+			size_type ans = 0;
+			for(const node* cur = buckets[n]; cur; cur = cur->next){
+				if(equals(get_key(cur->val), key))
+					ans++;
+			}
+			return ans;
 		}
 		bool empty() const{
 			return num_elements == 0;
@@ -209,13 +213,11 @@ class hashtable {
 			}
 			num_elements = 0;
 		}
-		const_iterator find(const key_type& val) const{
+		iterator find(const key_type& val){
 			size_type Index = bkt_num_key(val);
-			for(node* n = buckets[Index]; n; n= n->next){
-				if(equals(val, get_key(n->val)))
-					return iterator(n, this);
-			}
-			return end();
+			node* n;
+			for(n = buckets[Index]; n && !equals(val, get_key(n->val)); n= n->next);
+			return iterator(n, this);
 		}
 		value_type& find_or_insert(const value_type& tmp){
 			iterator item = find(get_key(tmp));
@@ -224,6 +226,31 @@ class hashtable {
 			}
 			else{
 				return *item;
+			}
+		}
+		void erase(const iterator& item){
+			node* p = item.cur;
+			const size_type n = bkt_num(p->val);
+			node* cur = buckets[n];
+			if(p == cur){
+				buckets[n] = cur->next;
+				delete_node(cur);
+				--num_elements;
+			}
+			else{
+				node* next = cur->next;
+				while(next){
+					if(next != p){
+						cur = next;
+						next = cur->next;
+					}
+					else{
+						next = next->next;
+						delete_node(cur->next);
+						cur->next = next;
+						break;
+					}
+				}
 			}
 		}
 	};

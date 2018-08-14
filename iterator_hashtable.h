@@ -32,6 +32,7 @@ struct hashtable_iterator {
 	typedef Value& reference;
 	typedef Value* pointer;
 
+public:
 	node* cur;
 	hashtable_ *ht;
 
@@ -48,8 +49,8 @@ struct hashtable_iterator {
 		cur = cur->next;
 		if(cur == NULL) {
 			size_type bucket = ht->bkt_num(old->val);
-			while(!cur && ++bucket<ht->buckets.size()){
-				cur = ht->buckets[bucket];
+			while(!cur && ++bucket<ht->bucket_count()){
+				cur = ht->getcur(bucket);
 			}
 		}
 		return *this;

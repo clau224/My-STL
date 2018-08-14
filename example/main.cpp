@@ -22,5 +22,7 @@ int main() {
 	heapTest();
 	priority_queueTest();
 	stringTest();
+	hash_setTest();
+	hash_mapTest();
 	return 0;
 }

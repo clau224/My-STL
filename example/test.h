@@ -34,5 +34,9 @@ void heapTest();
 void priority_queueTest();
 //对string进行测试
 void stringTest();
+//对hashset进行测试
+void hash_setTest();
+//对hash_map进行测试
+void hash_mapTest();
 
 #endif /* EXAMPLE_TEST_H_ */

@@ -42,5 +42,6 @@ void vectorTest() {
 		std::cout << *item << " ";
 	}
 	std::cout << std::endl << std::endl << std::endl;
+
 }
 

@@ -46,17 +46,17 @@ public:
 	bool empty() const{
 		return rep.empty();
 	}
-	iterator begin() const {
+	const_iterator begin() {
 		return rep.begin();
 	}
-	iterator end() const {
+	const_iterator end() {
 		return rep.end();
 	}
 	pair<iterator, bool> insert(const value_type& obj){
 		pair<typename ht::iterator, bool> p = rep.insert_unique(obj);
 		return pair<iterator, bool>(p.first, p.second);
 	}
-	iterator find(const key_type& key) const{
+	iterator find(const key_type& key) {
 		return rep.find(key);
 	}
 	void clear(){
@@ -68,6 +68,9 @@ public:
 	}
 	size_type bucket_count () const {
 		return rep.bucket_count();
+	}
+	void erase(iterator& item){
+		rep.erase(item);
 	}
 
 };
